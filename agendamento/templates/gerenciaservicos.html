@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerenciar serviços | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }.btn-gold { background:var(--gold);border-color:var(--gold);color:var(--ink); }.btn-gold:hover { background:#dfaa2f;border-color:#dfaa2f;color:var(--ink); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        {% bootstrap_messages %}
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+            <div>
+                <h1 class="h2 fw-bold mb-1">Serviços cadastrados</h1>
+                <p class="text-secondary mb-0">Serviços desativados não aparecem na página pública.</p>
+            </div>
+            <a class="btn btn-gold fw-semibold" href="{% url 'CadastraServico' %}">Novo serviço</a>
+        </div>
+
+        <section class="card panel-card p-4">
+            {% if servicos %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Serviço</th><th>Preço</th><th>Duração</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                    <tbody>
+                        {% for servico in servicos %}
+                        <tr{% if not servico.ativo %} class="text-secondary"{% endif %}>
+                            <td class="fw-semibold">{{ servico.tipo }}</td>
+                            <td>R$ {{ servico.preco|floatformat:2 }}</td>
+                            <td>{{ servico.duracao }} min</td>
+                            <td>{% if servico.ativo %}<span class="badge text-bg-success">Ativo</span>{% else %}<span class="badge text-bg-secondary">Inativo</span>{% endif %}</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-sm btn-outline-dark" href="{% url 'EditaServico' servico.pk %}">Editar</a>
+                                    <form action="{% url 'AlternaServico' servico.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm {% if servico.ativo %}btn-outline-danger{% else %}btn-outline-success{% endif %}" type="submit">{% if servico.ativo %}Desativar{% else %}Reativar{% endif %}</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-secondary mb-0">Nenhum serviço cadastrado ainda.</p>
+            {% endif %}
+        </section>
+    </main>
+    {% bootstrap_javascript %}
+</body>
+</html>

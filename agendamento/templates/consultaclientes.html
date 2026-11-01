@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clientes | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }
+        .contador { background:#fff3cc; color:var(--ink); font-variant-numeric:tabular-nums; }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        {% bootstrap_messages %}
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <h1 class="h2 fw-bold mb-0">Clientes</h1>
+            <span class="badge rounded-pill contador fs-6 fw-semibold">{{ clientes|length }} cadastrado{{ clientes|length|pluralize }}</span>
+        </div>
+
+        <section class="card panel-card p-4">
+            {% if clientes %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th scope="col">Nome</th><th scope="col">Telefone</th><th scope="col">E-mail</th><th scope="col">CPF</th><th scope="col">Faixa etária / Sexo</th></tr></thead>
+                    <tbody>
+                        {% for cliente in clientes %}
+                        <tr>
+                            <td><span class="fw-semibold">{{ cliente.nome }}</span><div class="small text-secondary">@{{ cliente.usuario.username }}</div></td>
+                            <td class="text-nowrap">{{ cliente.telefone }}</td>
+                            <td><a class="link-dark" href="mailto:{{ cliente.email }}">{{ cliente.email }}</a></td>
+                            <td class="text-nowrap">{{ cliente.cpf }}</td>
+                            <td>{{ cliente.get_faixa_etaria_display }} · {{ cliente.get_sexo_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-secondary mb-0">Nenhum cliente cadastrado ainda.</p>
+            {% endif %}
+        </section>
+    </main>
+    {% bootstrap_javascript %}
+</body>
+</html>

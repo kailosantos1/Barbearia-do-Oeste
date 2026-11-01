@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastrar barbeiro | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }.icon-box { width:3rem;height:3rem;display:grid;place-items:center;border-radius:.8rem;background:#fff3cc;font-size:1.35rem; }.btn-gold { background:var(--gold);border-color:var(--gold);color:var(--ink); }.btn-gold:hover { background:#dfaa2f;border-color:#dfaa2f;color:var(--ink); }
+        .form-control:focus, .form-select:focus { border-color:var(--gold); box-shadow:0 0 0 .25rem rgba(246,189,56,.3); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            {% bootstrap_messages %}
+            <section class="card panel-card p-4 p-md-5">
+                <div class="icon-box mb-3" aria-hidden="true">💈</div>
+                <h1 class="h3 fw-bold mb-1">Cadastrar barbeiro</h1>
+                <p class="text-secondary mb-4">Cria o login e o perfil profissional de uma vez. Passe o usuário e a senha ao barbeiro para o primeiro acesso.</p>
+
+                <form action="{% url 'CadastraBarbeiro' %}" method="post" novalidate>
+                    {% csrf_token %}
+                    {% bootstrap_form_errors form type='non_fields' %}
+
+                    <h2 class="h6 text-uppercase text-secondary fw-semibold mt-2 mb-3">Perfil</h2>
+                    {% bootstrap_field form.nome %}
+                    <div class="row g-3">
+                        <div class="col-sm-6">{% bootstrap_field form.telefone %}</div>
+                        <div class="col-sm-6">{% bootstrap_field form.especialidade %}</div>
+                    </div>
+
+                    <h2 class="h6 text-uppercase text-secondary fw-semibold mt-2 mb-3">Acesso</h2>
+                    {% bootstrap_field form.username %}
+                    {% bootstrap_field form.password1 show_help=False %}
+                    {% include 'includes/requisitos_senha.html' %}
+                    {% bootstrap_field form.password2 %}
+
+                    <button type="submit" class="btn btn-gold btn-lg w-100 fw-semibold mt-2">Cadastrar barbeiro</button>
+                </form>
+
+                <p class="text-center small mt-4 mb-0"><a class="link-secondary" href="{% url 'dashboard_gerente' %}">Voltar ao painel gerencial</a></p>
+            </section>
+        </div>
+    </main>
+    {% bootstrap_javascript %}
+</body>
+</html>

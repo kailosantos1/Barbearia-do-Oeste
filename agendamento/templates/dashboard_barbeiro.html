@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel do barbeiro | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.welcome { border-radius:1.25rem; color:#fff; background:radial-gradient(circle at 90% 15%,rgba(246,189,56,.34),transparent 18rem),linear-gradient(120deg,#101820,#263846); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }.icon-box { width:3rem;height:3rem;display:grid;place-items:center;border-radius:.8rem;background:#fff3cc;font-size:1.35rem; }.btn-gold { background:var(--gold);border-color:var(--gold);color:var(--ink); }.btn-gold:hover { background:#dfaa2f;border-color:#dfaa2f;color:var(--ink); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        {% bootstrap_messages %}
+        <section class="welcome p-4 p-md-5 mb-4">
+            <p class="text-warning text-uppercase small fw-semibold mb-2">Área do barbeiro</p>
+            <h1 class="display-6 fw-bold mb-2">Olá, {% if barbeiro %}{{ barbeiro.nome }}{% else %}{{ user.username }}{% endif %}.</h1>
+            <p class="lead text-white-50 mb-0">Acompanhe seus atendimentos e publique fotos dos seus trabalhos na galeria.</p>
+        </section>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <section class="card panel-card p-4 h-100">
+                    <div class="icon-box mb-3">📷</div>
+                    <h2 class="h5 fw-bold">Galeria</h2>
+                    <p class="text-secondary">Publique fotos dos trabalhos realizados.</p>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a class="btn btn-gold fw-semibold" href="{% url 'CadastraGaleria' %}">Nova foto</a>
+                        <a class="btn btn-outline-dark" href="{% url 'ListaGaleria' %}">Ver galeria</a>
+                    </div>
+                </section>
+            </div>
+            <div class="col-md-6">
+                <section class="card panel-card p-4 h-100">
+                    <div class="icon-box mb-3">💈</div>
+                    <h2 class="h5 fw-bold">Clientes</h2>
+                    <p class="text-secondary">Consulte a base de clientes cadastrados.</p>
+                    <a class="btn btn-gold fw-semibold align-self-start mt-auto" href="{% url 'ConsultaClientes' %}">Consultar clientes</a>
+                </section>
+            </div>
+        </div>
+
+        <section class="card panel-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h4 fw-bold mb-0">Meus agendamentos</h2><a class="link-dark fw-semibold" href="{% url 'ConsultaAgendamentos' %}">Ver todos e gerenciar →</a></div>
+            {% if not barbeiro %}
+                <p class="text-secondary mb-0">Sua conta ainda não está vinculada a um perfil de barbeiro, por isso não há agendamentos para mostrar.</p>
+            {% elif agendamentos %}
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Data</th><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Valor</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                        <tbody>
+                            {% for agendamento in agendamentos %}
+                                <tr>
+                                    <td>{{ agendamento.data_agendamento|date:"d/m/Y" }}</td>
+                                    <td>{{ agendamento.horario|time:"H:i" }}</td>
+                                    <td>{{ agendamento.cliente.nome }}</td>
+                                    <td>{{ agendamento.servico.tipo }}</td>
+                                    <td>R$ {{ agendamento.valor_total }}</td>
+                                    <td><span class="badge {% if agendamento.status == 'AGENDADO' %}text-bg-warning{% elif agendamento.status == 'CONCLUIDO' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ agendamento.get_status_display }}</span></td>
+                                    <td class="text-end">{% include 'includes/acoes_agendamento.html' %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-secondary mb-0">Nenhum agendamento por enquanto.</p>
+            {% endif %}
+        </section>
+    </main>
+    {% bootstrap_javascript %}
+    {% include 'includes/modal_cancelamento.html' %}
+</body>
+</html>

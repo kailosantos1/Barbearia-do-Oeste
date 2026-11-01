@@ -1,0 +1,25 @@
+# Ambiente virtual
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Segredos locais (copie de .env.example)
+.env
+
+# Banco SQLite antigo (o projeto usa somente MySQL)
+db.sqlite3
+
+# Uploads da galeria (mantém a pasta no repositório)
+media/fotos_servicos/*
+!media/fotos_servicos/.gitkeep
+
+# Editores e IDEs
+.vscode/
+.idea/
+
+# Sistema e logs
+.DS_Store
+*.log
+.impeccable/

@@ -1,0 +1,347 @@
+/* =========================
+   CONFIGURAÇÕES GERAIS
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #111111;
+    color: #f5f5f5;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.cabecalho {
+    width: 100%;
+    padding: 25px 8%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #0b0b0b;
+    border-bottom: 1px solid #333333;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo h1 {
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.logo p {
+    font-size: 12px;
+    color: #b89450;
+}
+
+.menu {
+    display: flex;
+    gap: 30px;
+}
+
+.menu a {
+    color: #ffffff;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    color: #c59b5a;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: 650px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 80px 8%;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.78),
+            rgba(0, 0, 0, 0.78)
+        ),
+        url("../img/barbearia.jpg");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-conteudo {
+    max-width: 700px;
+}
+
+.destaque {
+    color: #c59b5a;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+}
+
+.hero h2 {
+    font-size: 64px;
+    line-height: 1.1;
+    margin-bottom: 25px;
+}
+
+.hero h2 span {
+    color: #c59b5a;
+}
+
+.hero-conteudo > p:not(.destaque) {
+    max-width: 600px;
+    color: #cccccc;
+    font-size: 18px;
+    margin-bottom: 35px;
+}
+
+
+/* =========================
+   BOTÕES
+========================= */
+
+.botoes {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.botao {
+    display: inline-block;
+
+    padding: 14px 25px;
+
+    font-weight: bold;
+
+    border-radius: 4px;
+
+    transition: 0.3s;
+}
+
+.botao.principal {
+    background-color: #c59b5a;
+    color: #111111;
+}
+
+.botao.principal:hover {
+    background-color: #e0b970;
+    transform: translateY(-2px);
+}
+
+.botao.secundario {
+    border: 1px solid #c59b5a;
+    color: #c59b5a;
+}
+
+.botao.secundario:hover {
+    background-color: #c59b5a;
+    color: #111111;
+}
+
+
+/* =========================
+   SERVIÇOS
+========================= */
+
+.servicos {
+    padding: 90px 8%;
+    background-color: #151515;
+}
+
+.titulo-secao {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.titulo-secao p {
+    color: #c59b5a;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.titulo-secao h2 {
+    font-size: 40px;
+    margin-top: 8px;
+}
+
+.cards {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+}
+
+.card {
+    width: 33.33%;
+    padding: 35px;
+
+    background-color: #202020;
+
+    border: 1px solid #333333;
+
+    border-radius: 5px;
+
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: #c59b5a;
+}
+
+.icone {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 23px;
+    margin-bottom: 15px;
+}
+
+.card p {
+    color: #bbbbbb;
+    margin-bottom: 20px;
+}
+
+.card a {
+    color: #c59b5a;
+    font-weight: bold;
+}
+
+
+/* =========================
+   SOBRE
+========================= */
+
+.sobre {
+    padding: 100px 8%;
+
+    background-color: #0b0b0b;
+}
+
+.sobre-conteudo {
+    max-width: 800px;
+}
+
+.sobre h2 {
+    font-size: 42px;
+    margin-bottom: 25px;
+}
+
+.sobre p:not(.destaque) {
+    color: #cccccc;
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   RODAPÉ
+========================= */
+
+.rodape {
+    padding: 50px 8%;
+
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+
+    background-color: #050505;
+
+    color: #aaaaaa;
+
+    border-top: 1px solid #333333;
+}
+
+.rodape h2 {
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.rodape p {
+    font-size: 14px;
+}
+
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 768px) {
+
+    .cabecalho {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .menu {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero {
+        min-height: 550px;
+        padding: 60px 6%;
+    }
+
+    .hero h2 {
+        font-size: 42px;
+    }
+
+    .hero-conteudo > p:not(.destaque) {
+        font-size: 16px;
+    }
+
+    .cards {
+        flex-direction: column;
+    }
+
+    .card {
+        width: 100%;
+    }
+
+    .titulo-secao h2 {
+        font-size: 32px;
+    }
+
+    .sobre h2 {
+        font-size: 34px;
+    }
+
+    .rodape {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+

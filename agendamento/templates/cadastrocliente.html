@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crie seu cadastro | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink: #101820; --gold: #f6bd38; --cream: #f8f6f1; }
+        body { background: var(--cream); color: var(--ink); }
+        .navbar-profissional { background: #101820; }
+        .cadastro-area { min-height: calc(100vh - 76px); background: radial-gradient(circle at 0 0, #f8d878 0, transparent 28%), var(--cream); }
+        .cadastro-card { border: 0; border-radius: 1.25rem; box-shadow: 0 1.25rem 3.75rem rgba(16, 24, 32, .13); overflow: hidden; }
+        .painel-marca { background: linear-gradient(145deg, #101820, #263846); color: #fff; padding: 3rem; }
+        .marca-selo { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 50%; background: var(--gold); color: var(--ink); font-size: 1.5rem; }
+        .form-control, .form-select { border-radius: .65rem; padding: .7rem .85rem; }
+        .btn-gold { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+        .btn-gold:hover { background: #dfaa2f; border-color: #dfaa2f; color: var(--ink); }
+        @media (max-width: 991.98px) { .painel-marca { padding: 2rem; } }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="cadastro-area py-5"><div class="container py-lg-4"><div class="row justify-content-center"><div class="col-xl-10">
+        <div class="card cadastro-card"><div class="row g-0">
+            <aside class="col-lg-4 painel-marca d-flex flex-column justify-content-between"><div><div class="marca-selo mb-4">✂</div><p class="text-warning fw-semibold text-uppercase small mb-2">Barbearia do Oeste</p><h1 class="display-6 fw-bold">Seu próximo visual começa aqui.</h1><p class="text-white-50 mt-3 mb-0">Crie sua conta para receber um atendimento ainda mais personalizado.</p></div><p class="small text-white-50 mt-5 mb-0">Cadastro rápido, seguro e gratuito.</p></aside>
+            <section class="col-lg-8 p-4 p-md-5 bg-white"><div class="mb-4"><p class="text-uppercase small fw-semibold text-secondary mb-1">Bem-vindo</p><h2 class="h3 fw-bold mb-2">Crie seu cadastro</h2><p class="text-secondary mb-0">Preencha seus dados para fazer parte da nossa barbearia.</p></div>{% bootstrap_messages %}<form method="post" novalidate>{% csrf_token %}{% bootstrap_form_errors form type='non_fields' %}{% for field in form %}{% if field.name == 'password1' %}{% bootstrap_field field show_help=False %}{% include 'includes/requisitos_senha.html' %}{% else %}{% bootstrap_field field %}{% endif %}{% endfor %}<button type="submit" class="btn btn-gold btn-lg w-100 fw-semibold mt-2">Finalizar cadastro</button></form><p class="text-center text-secondary small mt-4 mb-0">Seus dados são utilizados somente para o seu atendimento.</p></section>
+        </div></div>
+    </div></div></div></main>
+    {% bootstrap_javascript %}
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% load static %}
+{% comment %}
+Checklist de senha em tempo real. Incluir logo abaixo de form.password1 (UserCreationForm: id_password1 / id_username).
+A verificação no navegador é só um guia: quem decide é o AUTH_PASSWORD_VALIDATORS do Django ao enviar.
+{% endcomment %}
+<ul class="list-unstyled small mb-3 mt-n2" id="requisitosSenha" aria-label="Requisitos da senha">
+    <li class="text-muted" data-regra="tamanho"><span class="req-icone d-inline-block text-center me-1" style="width:1rem" aria-hidden="true">•</span>Mínimo de 8 caracteres<span class="visually-hidden"> (pendente)</span></li>
+    <li class="text-muted" data-regra="numerica"><span class="req-icone d-inline-block text-center me-1" style="width:1rem" aria-hidden="true">•</span>Não ser inteiramente numérica<span class="visually-hidden"> (pendente)</span></li>
+    <li class="text-muted" data-regra="usuario"><span class="req-icone d-inline-block text-center me-1" style="width:1rem" aria-hidden="true">•</span>Não ser similar ao nome de usuário<span class="visually-hidden"> (pendente)</span></li>
+    <li class="text-muted" data-regra="comum"><span class="req-icone d-inline-block text-center me-1" style="width:1rem" aria-hidden="true">•</span>Não ser uma senha comumente utilizada<span class="visually-hidden"> (pendente)</span></li>
+</ul>
+<script src="{% static 'js/senha.js' %}" defer></script>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 static %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Galeria | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }
+        .eyebrow { color:#9a6b00; font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+        .foto-card { border:0; border-radius:1rem; overflow:hidden; box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); transition:transform .2s ease,box-shadow .2s ease; }
+        .foto-card:hover, .foto-card:focus-within { transform:translateY(-4px); box-shadow:0 1rem 2rem rgba(16,24,32,.15); }
+        .foto-botao { display:block; width:100%; padding:0; border:0; background:none; cursor:zoom-in; }
+        .foto-botao img { width:100%; aspect-ratio:1/1; object-fit:cover; }
+        .foto-botao:focus-visible { outline:3px solid var(--gold); outline-offset:-3px; }
+        .descricao-curta { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        #modalFotoImagem { max-height:75vh; object-fit:contain; background:#101820; }
+        @media (prefers-reduced-motion: reduce) { .foto-card { transition:none; } .foto-card:hover { transform:none; } }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        {% bootstrap_messages %}
+        <div class="mb-4">
+            <p class="eyebrow mb-2">Nossos trabalhos</p>
+            <h1 class="display-6 fw-bold mb-0">Galeria</h1>
+        </div>
+
+        {% if galerias %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            {% for galeria in galerias %}
+            <div class="col">
+                <article class="card foto-card h-100">
+                    <button type="button" class="foto-botao" data-bs-toggle="modal" data-bs-target="#modalFoto"
+                            data-foto="{{ galeria.foto.url }}"
+                            data-descricao="{{ galeria.descricao }}"
+                            data-barbeiro="{{ galeria.barbeiro.nome }}"
+                            data-data="{{ galeria.data|date:'d/m/Y' }}"
+                            aria-label="Ampliar foto: {{ galeria.descricao }}">
+                        <img src="{{ galeria.foto.thumb.url }}" alt="{{ galeria.descricao }}" loading="lazy" width="250" height="250">
+                    </button>
+                    <div class="card-body">
+                        <p class="descricao-curta mb-2">{{ galeria.descricao }}</p>
+                        <p class="small text-secondary mb-0">por <span class="fw-semibold">{{ galeria.barbeiro.nome }}</span> · {{ galeria.data|date:"d/m/Y" }}</p>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-secondary">Ainda não há fotos publicadas. Volte em breve!</p>
+        {% endif %}
+    </main>
+
+    <div class="modal fade" id="modalFoto" tabindex="-1" aria-labelledby="modalFotoTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content overflow-hidden">
+                <div class="modal-header">
+                    <h2 class="modal-title h5 fw-bold" id="modalFotoTitulo">Trabalho de <span id="modalFotoBarbeiro"></span></h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <img id="modalFotoImagem" class="w-100" src="" alt="">
+                <div class="modal-body">
+                    <p class="mb-1" id="modalFotoDescricao"></p>
+                    <p class="small text-secondary mb-0">Publicado em <span id="modalFotoData"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% bootstrap_javascript %}
+    <script src="{% static 'js/galeria.js' %}" defer></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if visao_gerente %}Agendamentos{% else %}Meus atendimentos{% endif %} | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        {% bootstrap_messages %}
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+            <div>
+                {% if visao_gerente %}
+                <h1 class="h2 fw-bold mb-1">Todos os agendamentos</h1>
+                <p class="text-secondary mb-0">Acompanhe, conclua ou cancele qualquer atendimento da barbearia.</p>
+                {% else %}
+                <h1 class="h2 fw-bold mb-1">Meus atendimentos</h1>
+                <p class="text-secondary mb-0">Agendamentos vinculados a {% if barbeiro %}{{ barbeiro.nome }}{% else %}você{% endif %}.</p>
+                {% endif %}
+            </div>
+            <div class="btn-group" role="group" aria-label="Ordenação">
+                <a class="btn btn-sm {% if ordem == 'desc' %}btn-dark{% else %}btn-outline-dark{% endif %}" href="?ordem=desc">Mais recentes primeiro</a>
+                <a class="btn btn-sm {% if ordem == 'asc' %}btn-dark{% else %}btn-outline-dark{% endif %}" href="?ordem=asc">Mais antigos primeiro</a>
+            </div>
+        </div>
+
+        <section class="card panel-card p-4">
+            {% if not visao_gerente and not barbeiro %}
+                <p class="text-secondary mb-0">Sua conta não está vinculada a um perfil de barbeiro, então não há atendimentos para mostrar.</p>
+            {% elif agendamentos %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Data</th><th>Horário</th><th>Cliente</th>{% if visao_gerente %}<th>Barbeiro</th>{% endif %}<th>Serviço</th><th>Observação</th><th>Valor</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                    <tbody>
+                        {% for agendamento in agendamentos %}
+                        <tr>
+                            <td>{{ agendamento.data_agendamento|date:"d/m/Y" }}</td>
+                            <td>{{ agendamento.horario|time:"H:i" }}</td>
+                            <td>{{ agendamento.cliente.nome }}<div class="small text-secondary">{{ agendamento.cliente.telefone }}</div></td>
+                            {% if visao_gerente %}<td>{{ agendamento.barbeiro.nome }}</td>{% endif %}
+                            <td>{{ agendamento.servico.tipo }}<div class="small text-secondary">{{ agendamento.servico.duracao }} min</div></td>
+                            <td class="small">{{ agendamento.observacao|default:"—" }}</td>
+                            <td>R$ {{ agendamento.valor_total|floatformat:2 }}</td>
+                            <td><span class="badge {% if agendamento.status == 'AGENDADO' %}text-bg-warning{% elif agendamento.status == 'CONCLUIDO' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ agendamento.get_status_display }}</span></td>
+                            <td class="text-end">{% include 'includes/acoes_agendamento.html' %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-secondary mb-0">Nenhum agendamento por enquanto.</p>
+            {% endif %}
+        </section>
+    </main>
+    {% bootstrap_javascript %}
+    {% include 'includes/modal_cancelamento.html' %}
+</body>
+</html>

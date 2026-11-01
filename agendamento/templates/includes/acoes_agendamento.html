@@ -1,0 +1,15 @@
+{% comment %}Botões de ação de um agendamento na visão do barbeiro. Requer includes/modal_cancelamento.html na página.{% endcomment %}
+<div class="d-inline-flex gap-2">
+    {% if agendamento.status == 'AGENDADO' %}
+    <form action="{% url 'ConcluirAgendamento' agendamento.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button type="submit" class="btn btn-sm btn-outline-success" aria-label="Concluir atendimento de {{ agendamento.cliente.nome }} em {{ agendamento.data_agendamento|date:'d/m/Y' }} às {{ agendamento.horario|time:'H:i' }}">Concluir</button>
+    </form>
+    {% endif %}
+    {% if agendamento.cancelavel %}
+    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalCancelamento"
+            data-url="{% url 'CancelarAgendamento' agendamento.pk %}"
+            data-descricao="{{ agendamento.servico.tipo }} de {{ agendamento.cliente.nome }} em {{ agendamento.data_agendamento|date:'d/m/Y' }} às {{ agendamento.horario|time:'H:i' }}.">Cancelar</button>
+    {% endif %}
+</div>

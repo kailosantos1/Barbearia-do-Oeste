@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Publicar na galeria | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }.icon-box { width:3rem;height:3rem;display:grid;place-items:center;border-radius:.8rem;background:#fff3cc;font-size:1.35rem; }.btn-gold { background:var(--gold);border-color:var(--gold);color:var(--ink); }.btn-gold:hover { background:#dfaa2f;border-color:#dfaa2f;color:var(--ink); }
+        .form-control:focus, .form-select:focus, .form-check-input:focus { border-color:var(--gold); box-shadow:0 0 0 .25rem rgba(246,189,56,.3); }.form-check-input:checked { background-color:var(--ink); border-color:var(--ink); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            {% bootstrap_messages %}
+            <section class="card panel-card p-4 p-md-5">
+                <div class="icon-box mb-3" aria-hidden="true">📷</div>
+                <h1 class="h3 fw-bold mb-1">Publicar na galeria</h1>
+                <p class="text-secondary mb-3">Mostre um trabalho seu. A foto aparece na galeria pública com o seu nome.</p>
+                <ul class="small text-secondary mb-4 ps-3">
+                    <li>Use uma foto nítida e bem iluminada (JPG ou PNG). A miniatura é recortada em quadrado, então centralize o corte.</li>
+                    <li>Na descrição, diga o serviço e o estilo, por exemplo "Degradê com risco e barba alinhada".</li>
+                </ul>
+
+                <form action="{% url 'CadastraGaleria' %}" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% bootstrap_form_errors form type='non_fields' %}
+                    {% bootstrap_field form.foto %}
+                    {% bootstrap_field form.descricao %}
+
+                    <button type="submit" class="btn btn-gold btn-lg w-100 fw-semibold mt-2">Publicar foto</button>
+                </form>
+
+                <p class="text-center small mt-4 mb-0">
+                    <a class="link-secondary" href="{% url 'ListaGaleria' %}">Ver galeria</a>
+                    <span class="text-secondary mx-2" aria-hidden="true">·</span>
+                    <a class="link-secondary" href="{% url 'dashboard_barbeiro' %}">Voltar ao painel</a>
+                </p>
+            </section>
+        </div>
+    </main>
+    {% bootstrap_javascript %}
+</body>
+</html>

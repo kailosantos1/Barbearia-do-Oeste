@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meus agendamentos | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }.btn-gold { background:var(--gold);border-color:var(--gold);color:var(--ink); }.btn-gold:hover { background:#dfaa2f;border-color:#dfaa2f;color:var(--ink); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">
+        {% bootstrap_messages %}
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+            <h1 class="h2 fw-bold mb-0">Meus agendamentos</h1>
+            <a class="btn btn-gold fw-semibold" href="{% url 'CadastraAgendamento' %}">Novo agendamento</a>
+        </div>
+
+        <section class="card panel-card p-4 mb-4">
+            <h2 class="h4 fw-bold mb-3">Próximos</h2>
+            {% if futuros %}
+            <ul class="list-group list-group-flush">
+                {% for agendamento in futuros %}
+                <li class="list-group-item px-0 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                    <div>
+                        <div class="fw-semibold">{{ agendamento.data_agendamento|date:"d/m/Y" }} às {{ agendamento.horario|time:"H:i" }} · {{ agendamento.servico.tipo }}</div>
+                        <div class="small text-secondary">com {{ agendamento.barbeiro.nome }} · {{ agendamento.servico.duracao }} min · R$ {{ agendamento.valor_total|floatformat:2 }}</div>
+                        {% if agendamento.observacao %}<div class="small text-secondary">Obs.: {{ agendamento.observacao }}</div>{% endif %}
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger align-self-start align-self-md-center" data-bs-toggle="modal" data-bs-target="#modalCancelamento"
+                            data-url="{% url 'CancelarAgendamento' agendamento.pk %}"
+                            data-descricao="{{ agendamento.servico.tipo }} com {{ agendamento.barbeiro.nome }} em {{ agendamento.data_agendamento|date:'d/m/Y' }} às {{ agendamento.horario|time:'H:i' }}.">Cancelar</button>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <p class="text-secondary mb-0">Você não tem horários marcados.</p>
+            {% endif %}
+        </section>
+
+        <section class="card panel-card p-4">
+            <h2 class="h4 fw-bold mb-3">Histórico</h2>
+            {% if historico %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Data</th><th>Horário</th><th>Serviço</th><th>Barbeiro</th><th>Valor</th><th>Status</th></tr></thead>
+                    <tbody>
+                        {% for agendamento in historico %}
+                        <tr>
+                            <td>{{ agendamento.data_agendamento|date:"d/m/Y" }}</td>
+                            <td>{{ agendamento.horario|time:"H:i" }}</td>
+                            <td>{{ agendamento.servico.tipo }}</td>
+                            <td>{{ agendamento.barbeiro.nome }}</td>
+                            <td>R$ {{ agendamento.valor_total|floatformat:2 }}</td>
+                            <td><span class="badge {% if agendamento.status == 'CONCLUIDO' %}text-bg-success{% elif agendamento.status == 'CANCELADO' %}text-bg-secondary{% else %}text-bg-light{% endif %}">{{ agendamento.get_status_display }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p class="text-secondary mb-0">Nada por aqui ainda.</p>
+            {% endif %}
+        </section>
+    </main>
+    {% bootstrap_javascript %}
+    {% include 'includes/modal_cancelamento.html' %}
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% load static %}
+{% comment %}
+Modal único de confirmação. Cada botão que o abre deve ter:
+  data-bs-toggle="modal" data-bs-target="#modalCancelamento"
+  data-url="{% url 'CancelarAgendamento' pk %}" data-descricao="texto exibido"
+{% endcomment %}
+<div class="modal fade" id="modalCancelamento" tabindex="-1" aria-labelledby="modalCancelamentoTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" method="post" id="formCancelamento">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+            <div class="modal-header">
+                <h2 class="modal-title h5 fw-bold" id="modalCancelamentoTitulo">Cancelar agendamento?</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2" id="modalCancelamentoDescricao"></p>
+                <p class="text-secondary small mb-0">Essa ação não pode ser desfeita. O horário ficará livre para outras pessoas.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Manter agendamento</button>
+                <button type="submit" class="btn btn-danger">Sim, cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="{% static 'js/cancelamento.js' %}" defer></script>

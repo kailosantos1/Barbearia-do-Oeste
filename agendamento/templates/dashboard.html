@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meu painel | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.welcome { border-radius:1.25rem; color:#fff; background:radial-gradient(circle at 90% 15%,rgba(246,189,56,.34),transparent 18rem),linear-gradient(120deg,#101820,#263846); }.panel-card { border:0;border-radius:1rem;box-shadow:0 .6rem 1.5rem rgba(16,24,32,.08); }.icon-box { width:3rem;height:3rem;display:grid;place-items:center;border-radius:.8rem;background:#fff3cc;font-size:1.35rem; }.btn-gold { background:var(--gold);border-color:var(--gold);color:var(--ink); }.btn-gold:hover { background:#dfaa2f;border-color:#dfaa2f;color:var(--ink); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="container py-4 py-md-5">{% bootstrap_messages %}<section class="welcome p-4 p-md-5 mb-4"><p class="text-warning text-uppercase small fw-semibold mb-2">Área do cliente</p><h1 class="display-6 fw-bold mb-2">Olá{% if cliente %}, {{ cliente.nome }}{% else %}, {{ user.username }}{% endif %}.</h1><p class="lead text-white-50 mb-0">Seu painel está pronto para cuidar dos seus próximos horários.</p></section><div class="row g-4"><div class="col-md-7"><section class="card panel-card p-4 h-100"><div class="icon-box mb-3">📅</div><h2 class="h4 fw-bold">Agende seu próximo horário</h2><p class="text-secondary">Escolha o serviço, barbeiro e o melhor horário para você.</p><div class="d-flex gap-2"><a class="btn btn-gold fw-semibold" href="{% url 'CadastraAgendamento' %}">Novo agendamento</a><a class="btn btn-outline-dark" href="{% url 'meus_agendamentos' %}">Meus agendamentos</a></div></section></div><div class="col-md-5"><section class="card panel-card p-4 h-100"><div class="icon-box mb-3">👤</div><h2 class="h4 fw-bold">Minha conta</h2>{% if cliente %}<dl class="mb-0 text-secondary"><dt class="small text-uppercase">E-mail</dt><dd>{{ cliente.email }}</dd><dt class="small text-uppercase">Telefone</dt><dd class="mb-0">{{ cliente.telefone }}</dd></dl>{% else %}<p class="text-secondary mb-0">Sua conta está ativa e pronta para uso.</p>{% endif %}</section></div></div></main>
+    {% bootstrap_javascript %}
+</body>
+</html>

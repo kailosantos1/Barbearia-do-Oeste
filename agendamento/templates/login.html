@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrar | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; } body { min-height:100vh; background:radial-gradient(circle at 0 0,#f8d878,transparent 30%),var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }.login-area { min-height:calc(100vh - 76px); display:grid; place-items:center; }.login-card { width:min(100%,30rem); border:0; border-radius:1.25rem; box-shadow:0 1.25rem 3.75rem rgba(16,24,32,.14); }.brand-mark { width:3.5rem;height:3.5rem;display:grid;place-items:center;border-radius:1rem;background:var(--ink);color:var(--gold);font-size:1.5rem; }.form-control { border-radius:.65rem;padding:.75rem .85rem; }.btn-gold { background:var(--gold); border-color:var(--gold); color:var(--ink); }.btn-gold:hover { background:#dfaa2f; border-color:#dfaa2f; color:var(--ink); }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main class="login-area px-3 py-5"><section class="card login-card p-4 p-md-5"><div class="brand-mark mb-4">✂</div><p class="text-uppercase small fw-semibold text-secondary mb-1">Clientes e barbeiros</p><h1 class="h2 fw-bold">Bom ter você de volta.</h1><p class="text-secondary mb-4">Entre para acessar seu painel. Barbeiros são levados à área de gestão.</p>{% bootstrap_messages %}<form method="post" novalidate>{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">{% bootstrap_form form %}<button class="btn btn-gold btn-lg w-100 fw-semibold mt-2" type="submit">Entrar na minha conta</button></form><p class="text-center text-secondary small mt-4 mb-0">Ainda não tem uma conta? <a class="fw-semibold link-dark" href="{% url 'CadastraCliente' %}">Faça seu cadastro</a>.</p></section></main>
+    {% bootstrap_javascript %}
+</body>
+</html>

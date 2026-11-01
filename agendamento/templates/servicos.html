@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    {% load django_bootstrap5 %}
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Serviços | Barbearia do Oeste</title>
+    {% bootstrap_css %}
+    <style>
+        :root { --ink:#101820; --gold:#f6bd38; --paper:#f8f6f1; --muted:#66727b; }
+        body { background:var(--paper); color:var(--ink); }.navbar-profissional { background:var(--ink); }
+        .services-hero { color:#fff; background:radial-gradient(circle at 82% 18%,rgba(246,189,56,.3),transparent 17rem),linear-gradient(120deg,#101820,#263846); }.eyebrow { color:var(--gold); font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+        .service-card { overflow:hidden; border:0; border-radius:1.1rem; box-shadow:0 .65rem 1.5rem rgba(16,24,32,.08); transition:transform .2s ease,box-shadow .2s ease; }.service-card:hover { transform:translateY(-6px); box-shadow:0 1.2rem 2.4rem rgba(16,24,32,.15); }
+        .service-top { min-height:8.25rem; padding:1.5rem; color:#fff; background:linear-gradient(135deg,#101820,#29404e); }.service-icon { width:3.25rem; height:3.25rem; display:grid; place-items:center; border-radius:1rem; background:rgba(246,189,56,.95); color:var(--ink); font-size:1.45rem; }.price { color:var(--gold); font-weight:800; font-size:1.35rem; }.duration { color:#d7dee2; font-size:.85rem; }
+        .card-body { padding:1.5rem; }.service-description { color:var(--muted); min-height:3.25rem; }.btn-gold { background:var(--gold); border-color:var(--gold); color:var(--ink); }.btn-gold:hover { background:#dfaa2f; border-color:#dfaa2f; color:var(--ink); }.included { color:var(--muted); font-size:.88rem; }.included::before { content:'✓'; color:#9a6b00; font-weight:800; margin-right:.45rem; }
+        .cta-strip { border-radius:1.25rem; background:#e8e1d4; }
+    </style>
+</head>
+<body>
+    {% include 'includes/navbar.html' %}
+    <main>
+        <section class="services-hero py-5"><div class="container py-lg-4"><div class="row align-items-center g-4"><div class="col-lg-8"><p class="eyebrow mb-3">Barbearia do Oeste</p><h1 class="display-4 fw-bold mb-3">Serviços feitos para o seu estilo.</h1><p class="lead text-white-50 mb-0">Do clássico ao contemporâneo, cada atendimento é pensado para você sair confiante.</p></div><div class="col-lg-4"><div class="border border-light border-opacity-25 rounded-4 p-4"><span class="text-warning fw-semibold">Atendimento com horário marcado</span><p class="small text-white-50 mb-0 mt-2">Escolha seu serviço e encontre o melhor momento para cuidar de você.</p></div></div></div></div></section>
+
+        <section class="container py-5"><div class="text-center mb-5"><p class="eyebrow text-dark mb-2">Nossa seleção</p><h2 class="display-6 fw-bold">Encontre o serviço ideal</h2><p class="text-secondary mb-0">Valores e duração estimada para você se organizar.</p></div>
+            {% if servicos %}
+            <div class="row g-4">
+                {% for servico in servicos %}
+                <div class="col-md-6 col-lg-4"><article class="card service-card h-100"><div class="service-top d-flex justify-content-between"><div class="service-icon" aria-hidden="true">{% with nome=servico.tipo|lower %}{% if 'barba' in nome %}🪒{% elif 'sobrancelha' in nome or 'combo' in nome %}💈{% elif 'corte' in nome or 'cabelo' in nome %}✂{% else %}✦{% endif %}{% endwith %}</div><div class="text-end"><div class="price">R$ {{ servico.preco|floatformat:2 }}</div><div class="duration">{{ servico.duracao }} min</div></div></div><div class="card-body d-flex flex-column"><h3 class="h4 fw-bold mb-4">{{ servico.tipo }}</h3><a href="{% url 'CadastraAgendamento' %}?servico={{ servico.pk }}" class="btn btn-gold w-100 fw-semibold mt-auto">Agendar agora</a></div></article></div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center text-secondary">Nenhum serviço disponível no momento. Volte em breve!</p>
+            {% endif %}
+        </section>
+        <section class="container pb-5"><div class="cta-strip p-4 p-md-5 text-center"><p class="eyebrow text-dark mb-2">Pronto para renovar?</p><h2 class="h1 fw-bold">Seu próximo horário está a poucos cliques.</h2><p class="text-secondary mb-4">Crie sua conta ou entre para realizar seu agendamento.</p><a href="{% url 'CadastraAgendamento' %}" class="btn btn-dark btn-lg px-4">Agendar meu horário</a></div></section>
+    </main>
+    {% bootstrap_javascript %}
+</body>
+</html>

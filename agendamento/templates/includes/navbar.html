@@ -1,0 +1,42 @@
+{% comment %}
+Menu por perfil. Com login, o painel do usuário é sempre o primeiro item e também o destino do logo.
+Superusuário é tratado como gerente (mesma regra de views.painel_do_usuario).
+{% endcomment %}
+{% if not user.is_authenticated %}{% url 'index' as url_inicio %}{% elif user.is_superuser or user.tipo_usuario == 'GERENTE' %}{% url 'dashboard_gerente' as url_inicio %}{% elif user.tipo_usuario == 'BARBEIRO' %}{% url 'dashboard_barbeiro' as url_inicio %}{% else %}{% url 'dashboard' as url_inicio %}{% endif %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-profissional px-3 py-3" aria-label="Navegação principal">
+    <a class="navbar-brand" href="{{ url_inicio }}">Barbearia do Oeste</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPrincipal" aria-controls="navbarPrincipal" aria-expanded="false" aria-label="Alternar navegação">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarPrincipal">
+        <div class="navbar-nav ms-auto align-items-lg-center">
+            {% if not user.is_authenticated %}
+                <a class="nav-link" href="{% url 'index' %}">Início</a>
+                <a class="nav-link" href="{% url 'servicos' %}">Serviços</a>
+                <a class="nav-link" href="{% url 'ListaGaleria' %}">Galeria</a>
+                <a class="btn btn-outline-light ms-lg-3 mt-3 mt-lg-0 px-3" href="{% url 'login' %}">Entrar</a>
+                <a class="btn btn-warning fw-semibold ms-lg-2 mt-3 mt-lg-0 px-3" href="{% url 'CadastraCliente' %}">Cadastrar</a>
+            {% else %}
+                {% if user.is_superuser or user.tipo_usuario == 'GERENTE' %}
+                    <a class="nav-link" href="{% url 'dashboard_gerente' %}">Painel gerencial</a>
+                    <a class="nav-link" href="{% url 'CadastraBarbeiro' %}">Cadastrar barbeiro</a>
+                    <a class="nav-link" href="{% url 'GerenciaServicos' %}">Gerenciar serviços</a>
+                    <a class="nav-link" href="{% url 'ConsultaClientes' %}">Clientes</a>
+                {% elif user.tipo_usuario == 'BARBEIRO' %}
+                    <a class="nav-link" href="{% url 'dashboard_barbeiro' %}">Painel do barbeiro</a>
+                    <a class="nav-link" href="{% url 'ConsultaAgendamentos' %}">Atendimentos</a>
+                    <a class="nav-link" href="{% url 'CadastraGaleria' %}">Publicar foto</a>
+                {% else %}
+                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    <a class="nav-link" href="{% url 'meus_agendamentos' %}">Meus agendamentos</a>
+                    <a class="nav-link" href="{% url 'servicos' %}">Serviços</a>
+                {% endif %}
+                <a class="nav-link" href="{% url 'ListaGaleria' %}">Galeria</a>
+                <form action="{% url 'logout' %}" method="post" class="ms-lg-3 mt-3 mt-lg-0">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-light px-3" type="submit">Sair</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</nav>
