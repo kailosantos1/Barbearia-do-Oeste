@@ -430,6 +430,21 @@ def ListaGaleria (request):
         return render (request, 'consultagaleria.html', context)
 
 
+@login_required(login_url='login')
+@require_POST
+def ExcluiGaleria(request, pk):
+        """Gerente ou o barbeiro autor remove a foto da galeria, junto com os arquivos no storage."""
+        galeria = get_object_or_404(Galeria.objects.select_related('barbeiro'), pk=pk)
+        if not (eh_gerente(request.user) or galeria.barbeiro.usuario_id == request.user.pk):
+                messages.error(request, 'Acesso negado: você só pode excluir fotos publicadas por você.')
+                return redirect('ListaGaleria')
+
+        galeria.foto.delete(save=False)
+        galeria.delete()
+        messages.success(request, 'Foto excluída da galeria.')
+        return redirect('ListaGaleria')
+
+
 
 
 

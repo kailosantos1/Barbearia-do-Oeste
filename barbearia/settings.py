@@ -46,6 +46,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Cloudflare Tunnel
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.trycloudflare.com',
+]
+# Domínios adicionais via .env (ex: domínio próprio do Cloudflare), separados por vírgula
+extra_csrf = os.environ.get('CSRF_TRUSTED_ORIGINS')
+if extra_csrf:
+    CSRF_TRUSTED_ORIGINS.extend([d.strip() for d in extra_csrf.split(',') if d.strip()])
+
+# Reconhece HTTPS quando atrás do proxy do Cloudflare
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Application definition
 

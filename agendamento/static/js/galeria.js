@@ -15,3 +15,14 @@
         document.getElementById('modalFotoImagem').src = '';
     });
 })();
+
+// Modal de exclusão: aponta o formulário de POST para a URL da foto cujo botão "Excluir" foi clicado.
+(function () {
+    const modalExclusao = document.getElementById('modalExclusao');
+    if (!modalExclusao) return;
+    modalExclusao.addEventListener('show.bs.modal', function (evento) {
+        const botao = evento.relatedTarget;
+        document.getElementById('formExclusao').action = botao.dataset.url;
+        document.getElementById('modalExclusaoDescricao').textContent = botao.dataset.descricao;
+    });
+})();

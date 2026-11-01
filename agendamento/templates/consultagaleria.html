@@ -44,6 +44,13 @@
                         <p class="descricao-curta mb-2">{{ galeria.descricao }}</p>
                         <p class="small text-secondary mb-0">por <span class="fw-semibold">{{ galeria.barbeiro.nome }}</span> · {{ galeria.data|date:"d/m/Y" }}</p>
                     </div>
+                    {% if user.is_superuser or user.tipo_usuario == 'GERENTE' or galeria.barbeiro.usuario_id == user.pk %}
+                    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalExclusao"
+                                data-url="{% url 'ExcluiGaleria' galeria.pk %}"
+                                data-descricao="{{ galeria.descricao }}">Excluir</button>
+                    </div>
+                    {% endif %}
                 </article>
             </div>
             {% endfor %}
@@ -69,6 +76,26 @@
                     <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalExclusao" tabindex="-1" aria-labelledby="modalExclusaoTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form class="modal-content" method="POST" id="formExclusao">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h2 class="modal-title h5 fw-bold" id="modalExclusaoTitulo">Excluir foto?</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2" id="modalExclusaoDescricao"></p>
+                    <p class="text-secondary small mb-0">Essa ação não pode ser desfeita. A foto será removida da galeria.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Manter foto</button>
+                    <button type="submit" class="btn btn-danger">Sim, excluir</button>
+                </div>
+            </form>
         </div>
     </div>
 

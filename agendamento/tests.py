@@ -737,6 +737,108 @@ class GaleriaTests(TestCase):
         def test_galeria_vazia(self):
                 self.assertContains(self.client.get(reverse('ListaGaleria')), 'Ainda não há fotos publicadas.')
 
+        # Exclusão de fotos
+        def publica(self, barbeiro, nome='corte.png'):
+                return Galeria.objects.create(barbeiro=barbeiro, foto=imagem_png(nome), descricao=f'Foto de {barbeiro.nome}')
+
+        def exclui(self, galeria):
+                return self.client.post(reverse('ExcluiGaleria', args=[galeria.pk]))
+
+        def test_barbeiro_exclui_propria_foto_e_arquivos(self):
+                galeria = self.publica(self.ze)
+                storage, original, thumb = galeria.foto.storage, galeria.foto.name, galeria.foto.thumb.name
+                self.assertTrue(storage.exists(original) and storage.exists(thumb))
+
+                self.client.force_login(self.usuario_ze)
+                response = self.exclui(galeria)
+                self.assertRedirects(response, reverse('ListaGaleria'))
+                self.assertIn('Foto excluída', self.mensagens(response))
+                self.assertFalse(Galeria.objects.filter(pk=galeria.pk).exists())
+                self.assertFalse(storage.exists(original))
+                self.assertFalse(storage.exists(thumb))
+
+        def test_barbeiro_nao_exclui_foto_de_outro(self):
+                galeria = self.publica(self.rui)
+                self.client.force_login(self.usuario_ze)
+                response = self.exclui(galeria)
+                self.assertRedirects(response, reverse('ListaGaleria'))
+                self.assertIn('Acesso negado', self.mensagens(response))
+                self.assertTrue(Galeria.objects.filter(pk=galeria.pk).exists())
+                self.assertTrue(galeria.foto.storage.exists(galeria.foto.name))
+
+        def test_gerente_exclui_qualquer_foto(self):
+                gerente = Usuario.objects.create_user('chefe', password='senha-forte-123', tipo_usuario='GERENTE')
+                fotos = [self.publica(self.ze, 'a.png'), self.publica(self.rui, 'b.png')]
+                self.client.force_login(gerente)
+                for galeria in fotos:
+                        with self.subTest(barbeiro=galeria.barbeiro.nome):
+                                self.assertRedirects(self.exclui(galeria), reverse('ListaGaleria'))
+                                self.assertFalse(galeria.foto.storage.exists(galeria.foto.name))
+                self.assertFalse(Galeria.objects.exists())
+
+        def test_cliente_nao_exclui_foto(self):
+                galeria = self.publica(self.ze)
+                self.client.force_login(self.cliente)
+                response = self.exclui(galeria)
+                self.assertRedirects(response, reverse('ListaGaleria'))
+                self.assertIn('Acesso negado', self.mensagens(response))
+                self.assertTrue(Galeria.objects.filter(pk=galeria.pk).exists())
+
+        def test_visitante_nao_exclui_foto(self):
+                galeria = self.publica(self.ze)
+                url = reverse('ExcluiGaleria', args=[galeria.pk])
+                self.assertRedirects(self.client.post(url), f"{reverse('login')}?next={url}")
+                self.assertTrue(Galeria.objects.filter(pk=galeria.pk).exists())
+
+        def test_exclusao_exige_post(self):
+                galeria = self.publica(self.ze)
+                self.client.force_login(self.usuario_ze)
+                self.assertEqual(self.client.get(reverse('ExcluiGaleria', args=[galeria.pk])).status_code, 405)
+                self.assertTrue(Galeria.objects.filter(pk=galeria.pk).exists())
+
+        def test_exclusao_exige_csrf(self):
+                from django.test import Client
+                galeria = self.publica(self.ze)
+                cliente_http = Client(enforce_csrf_checks=True)
+                cliente_http.force_login(self.usuario_ze)
+                self.assertEqual(cliente_http.post(reverse('ExcluiGaleria', args=[galeria.pk])).status_code, 403)
+                self.assertTrue(Galeria.objects.filter(pk=galeria.pk).exists())
+
+        def test_exclusao_de_foto_inexistente(self):
+                self.client.force_login(self.usuario_ze)
+                self.assertEqual(self.client.post(reverse('ExcluiGaleria', args=[999])).status_code, 404)
+
+        def test_botao_excluir_so_para_autor_e_gerente(self):
+                minha = self.publica(self.ze, 'a.png')
+                alheia = self.publica(self.rui, 'b.png')
+                url_minha = reverse('ExcluiGaleria', args=[minha.pk])
+                url_alheia = reverse('ExcluiGaleria', args=[alheia.pk])
+                gerente = Usuario.objects.create_user('chefe', password='senha-forte-123', tipo_usuario='GERENTE')
+
+                casos = [(None, []), (self.cliente, []), (self.usuario_ze, [url_minha]), (gerente, [url_minha, url_alheia])]
+                for usuario, visiveis in casos:
+                        with self.subTest(usuario=getattr(usuario, 'username', 'anônimo')):
+                                self.client.logout()
+                                if usuario:
+                                        self.client.force_login(usuario)
+                                response = self.client.get(reverse('ListaGaleria'))
+                                self.assertContains(response, 'btn-outline-danger', count=len(visiveis))
+                                for url in [url_minha, url_alheia]:
+                                        if url in visiveis:
+                                                self.assertContains(response, f'data-url="{url}"')
+                                        else:
+                                                self.assertNotContains(response, f'data-url="{url}"')
+
+        def test_modal_de_exclusao_tem_form_post_com_csrf(self):
+                self.publica(self.ze)
+                self.client.force_login(self.usuario_ze)
+                response = self.client.get(reverse('ListaGaleria'))
+                self.assertContains(response, 'id="modalExclusao"')
+                self.assertContains(response, 'data-bs-target="#modalExclusao"')
+                self.assertContains(response, 'method="POST" id="formExclusao"')
+                self.assertContains(response, 'csrfmiddlewaretoken')
+                self.assertContains(response, 'Sim, excluir')
+
 
 class GerenteTests(TestCase):
         def setUp(self):

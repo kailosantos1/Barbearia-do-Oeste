@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from agendamento.views import horarios_disponiveis, AlternaServico, CancelarAgendamento, ConcluirAgendamento, meus_agendamentos, EditaServico, GerenciaServicos, CadastraAgendamento, CadastraBarbeiro, CadastraCliente, CadastraGaleria, CadastraServico, CadastraUsuario, ConsultaAgendamentos, ConsultaClientes, ListaGaleria, dashboard, dashboard_barbeiro, dashboard_gerente, index, login_cliente, logout_cliente, servicos
+from agendamento.views import horarios_disponiveis, AlternaServico, CancelarAgendamento, ConcluirAgendamento, meus_agendamentos, EditaServico, GerenciaServicos, CadastraAgendamento, CadastraBarbeiro, CadastraCliente, CadastraGaleria, CadastraServico, CadastraUsuario, ConsultaAgendamentos, ConsultaClientes, ExcluiGaleria, ListaGaleria, dashboard, dashboard_barbeiro, dashboard_gerente, index, login_cliente, logout_cliente, servicos
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('agendamentos/<int:pk>/cancelar/', CancelarAgendamento, name='CancelarAgendamento'),
     path('agendamentos/<int:pk>/concluir/', ConcluirAgendamento, name='ConcluirAgendamento'),
     path('listagaleria/', ListaGaleria, name='ListaGaleria'),
+    path('galeria/<int:pk>/excluir/', ExcluiGaleria, name='ExcluiGaleria'),
 ]
 
 if settings.DEBUG:
